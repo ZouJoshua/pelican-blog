@@ -1,0 +1,1195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Joshua's Blog</title><link href="http://localhost:8000/" rel="alternate"></link><link href="http://localhost:8000/feed/atom/index.html" rel="self"></link><id>http://localhost:8000/</id><updated>2017-07-11T14:00:00+08:00</updated><entry><title>test5</title><link href="http://localhost:8000/./articles/1499656270/" rel="alternate"></link><published>2017-07-11T14:00:00+08:00</published><updated>2017-07-11T14:00:00+08:00</updated><author><name>Joshua</name></author><id>tag:localhost,2017-07-11:/./articles/1499656270/</id><summary type="html">&lt;p&gt;My first post,read it to find out.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;采用pelican搭建数据科学博客&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;环境&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本地环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）&lt;/p&gt;
+&lt;p&gt;Python 3.5&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ubuntu 16.04（AWS云服务）&lt;/p&gt;
+&lt;p&gt;python 3.5&lt;/p&gt;
+&lt;h2&gt;博客框架&lt;/h2&gt;
+&lt;p&gt;通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击&lt;code&gt;Enter&lt;/code&gt;接受默认即可，后续可以在&lt;code&gt;pelicanconf.py&lt;/code&gt;文件里更改配置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(blogs) D:\Python\envs\blogs\blog&amp;gt;pelican-quickstart
+Welcome to pelican-quickstart v3.7.1.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files needed by Pelican.
+
+
+&amp;gt; Where do you want to create your new web site? [.]
+&amp;gt; What will be the title of this web site? Joshua&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Joshua Zou
+&amp;gt; What will be the default language of this web site? [Chinese (Simplified)]
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n)
+&amp;gt; How many articles per page do you want? [10]
+&amp;gt; What is your time zone? [Europe/Paris] Asia/Shanghai
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n)
+&amp;gt; Do you want to upload your website using FTP? (y/N)
+&amp;gt; Do you want to upload your website using SSH? (y/N)
+&amp;gt; Do you want to upload your website using Dropbox? (y/N)
+&amp;gt; Do you want to upload your website using S3? (y/N)
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N)
+Done. Your new project is available at D:\Python\envs\blogs\blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成后会在相应的目录里生成如下基础框架结构及文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
+├── output             # 将blog文件转化成相应的html及相应文件的存放目录
+├── develop_server.sh  # pelican简易web服务器操作文件
+├── Makefile           # 方便管理博客的Make命令文件
+├── fabfile.py         # 与make类似，可用fab publish，fab server命令
+├── pelicanconf.py     # 本地开发时的配置文件
+└── publishconf.py     # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;后续配置完整后，框架如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
+|--output                # 将blog文件转化成相应的html及相应文件的存放目录
+   └──.git               # 执行git init之后，产生的远程仓库目录
+|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
+|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
+|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
+|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
+|  └──tag                # 目录，存放编辑器开头所指定的Tag
+|  └──theme              # 目录，存放博客模板文件
+|  └──archives.html,authors.html,categories.html,index.html, tags.html
+|——pelican-plugins       # 目录，pelican插件
+|——pelican-themes        # 目录，pelican主题
+|——develop_server.sh     # pelican简易web服务器操作文件
+|——Makefile              # make 命令文件
+|——fabfile.py            # 与make类似，可用fab publish, fab server命令
+|——pelicanconf.py        # 本地开发时的配置文件
+|——publishconf.py        # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Git远程仓库配置&lt;/h2&gt;
+&lt;p&gt;要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd output
+git init         #产生一个.git文件夹
+git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Feed设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FEED_RSS = u&amp;quot;feeds/all.rss.xml&amp;quot; 
+CATEGORY_FEED_RSS=u&amp;quot;feeds/%s.rss.xml&amp;quot;    #为分类添加Feed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;主题设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题,有些主题下载下来为空需要自己重新找下该主题的链接重新下载安装下
+cd pelican-themes
+git clone https://github.com/kdeldycke/plumage.git
+pelican-themes -i plumage  #可换成你自己的theme
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;主题头像设置&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+└── content/
+  └── images/
+      └──yourheaderimage.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在配置文件&lt;code&gt;pelicanconf.py&lt;/code&gt;中添加设置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;STATIC_PATHS = [&amp;#39;images&amp;#39;]
+HEADER_IMAGE = &amp;quot;yourheaderimage.png&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Disqus第三方评论&lt;/h3&gt;
+&lt;p&gt;第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Site name: {your git account name}.github.io
+Admin URL: {Shortname}.disqus.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Plugin设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-plugins.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;获取全部插件&lt;code&gt;git clone https://github.com/getpelican/pelican-plugins.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Jupyter插件&lt;/h3&gt;
+&lt;p&gt;Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;执行&lt;code&gt;git init&lt;/code&gt;将当前文件夹初始化为一个git仓库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建&lt;code&gt;plugins&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;在plugins文件夹中执行&lt;code&gt;git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb&lt;/code&gt;来添加插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MARKUP = (&amp;#39;md&amp;#39;, &amp;#39;ipynb&amp;#39;)
+PLUGIN_PATHS = [ &amp;#39;./plugins&amp;#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
+PLUGINS = [&amp;#39;ipynb.markup&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Menu Item设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MENUITEMS = ((&amp;quot;ITEM1&amp;quot;,&amp;quot;http://github.com&amp;quot;),
+         (&amp;quot;ITEM2&amp;quot;,URL),
+        ......)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;BlogRoll和Social设置&lt;/h3&gt;
+&lt;p&gt;设置一些Blog链接，通过设置LINKS实现,具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LINKS =  ((&amp;quot;Github&amp;quot;, &amp;quot;https://github.com&amp;quot;),
+  (&amp;quot;Cnblogs&amp;quot;, URL),)
+SOCIAL = ((&amp;quot;博客园&amp;quot;, &amp;quot;http://www.cnblogs.com&amp;quot;),
+     (&amp;quot;Github&amp;#39;,&amp;#39;http://github.com&amp;quot;),)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;发布博客站点&lt;/h3&gt;
+&lt;p&gt;三种方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pelican命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content -s publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;fabric&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install fabric
+fab build
+fab regenerate
+fab serve
+fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make html
+make regenerate
+make serve
+make devserver
+./develop_server.sh stop
+&lt;/pre&gt;&lt;/div&gt;</content><category term="mongodb"></category></entry><entry><title>test4</title><link href="http://localhost:8000/./articles/1499656253/" rel="alternate"></link><published>2017-07-10T14:00:00+08:00</published><updated>2017-07-10T14:00:00+08:00</updated><author><name>Joshua</name></author><id>tag:localhost,2017-07-10:/./articles/1499656253/</id><summary type="html">&lt;p&gt;My first post,read it to find out.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;采用pelican搭建数据科学博客&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;环境&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本地环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）&lt;/p&gt;
+&lt;p&gt;Python 3.5&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ubuntu 16.04（AWS云服务）&lt;/p&gt;
+&lt;p&gt;python 3.5&lt;/p&gt;
+&lt;h2&gt;博客框架&lt;/h2&gt;
+&lt;p&gt;通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击&lt;code&gt;Enter&lt;/code&gt;接受默认即可，后续可以在&lt;code&gt;pelicanconf.py&lt;/code&gt;文件里更改配置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(blogs) D:\Python\envs\blogs\blog&amp;gt;pelican-quickstart
+Welcome to pelican-quickstart v3.7.1.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files needed by Pelican.
+
+
+&amp;gt; Where do you want to create your new web site? [.]
+&amp;gt; What will be the title of this web site? Joshua&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Joshua Zou
+&amp;gt; What will be the default language of this web site? [Chinese (Simplified)]
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n)
+&amp;gt; How many articles per page do you want? [10]
+&amp;gt; What is your time zone? [Europe/Paris] Asia/Shanghai
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n)
+&amp;gt; Do you want to upload your website using FTP? (y/N)
+&amp;gt; Do you want to upload your website using SSH? (y/N)
+&amp;gt; Do you want to upload your website using Dropbox? (y/N)
+&amp;gt; Do you want to upload your website using S3? (y/N)
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N)
+Done. Your new project is available at D:\Python\envs\blogs\blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成后会在相应的目录里生成如下基础框架结构及文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
+├── output             # 将blog文件转化成相应的html及相应文件的存放目录
+├── develop_server.sh  # pelican简易web服务器操作文件
+├── Makefile           # 方便管理博客的Make命令文件
+├── fabfile.py         # 与make类似，可用fab publish，fab server命令
+├── pelicanconf.py     # 本地开发时的配置文件
+└── publishconf.py     # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;后续配置完整后，框架如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
+|--output                # 将blog文件转化成相应的html及相应文件的存放目录
+   └──.git               # 执行git init之后，产生的远程仓库目录
+|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
+|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
+|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
+|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
+|  └──tag                # 目录，存放编辑器开头所指定的Tag
+|  └──theme              # 目录，存放博客模板文件
+|  └──archives.html,authors.html,categories.html,index.html, tags.html
+|——pelican-plugins       # 目录，pelican插件
+|——pelican-themes        # 目录，pelican主题
+|——develop_server.sh     # pelican简易web服务器操作文件
+|——Makefile              # make 命令文件
+|——fabfile.py            # 与make类似，可用fab publish, fab server命令
+|——pelicanconf.py        # 本地开发时的配置文件
+|——publishconf.py        # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Git远程仓库配置&lt;/h2&gt;
+&lt;p&gt;要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd output
+git init         #产生一个.git文件夹
+git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Feed设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FEED_RSS = u&amp;quot;feeds/all.rss.xml&amp;quot; 
+CATEGORY_FEED_RSS=u&amp;quot;feeds/%s.rss.xml&amp;quot;    #为分类添加Feed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;主题设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题,有些主题下载下来为空需要自己重新找下该主题的链接重新下载安装下
+cd pelican-themes
+git clone https://github.com/kdeldycke/plumage.git
+pelican-themes -i plumage  #可换成你自己的theme
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;主题头像设置&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+└── content/
+  └── images/
+      └──yourheaderimage.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在配置文件&lt;code&gt;pelicanconf.py&lt;/code&gt;中添加设置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;STATIC_PATHS = [&amp;#39;images&amp;#39;]
+HEADER_IMAGE = &amp;quot;yourheaderimage.png&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Disqus第三方评论&lt;/h3&gt;
+&lt;p&gt;第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Site name: {your git account name}.github.io
+Admin URL: {Shortname}.disqus.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Plugin设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-plugins.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;获取全部插件&lt;code&gt;git clone https://github.com/getpelican/pelican-plugins.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Jupyter插件&lt;/h3&gt;
+&lt;p&gt;Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;执行&lt;code&gt;git init&lt;/code&gt;将当前文件夹初始化为一个git仓库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建&lt;code&gt;plugins&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;在plugins文件夹中执行&lt;code&gt;git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb&lt;/code&gt;来添加插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MARKUP = (&amp;#39;md&amp;#39;, &amp;#39;ipynb&amp;#39;)
+PLUGIN_PATHS = [ &amp;#39;./plugins&amp;#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
+PLUGINS = [&amp;#39;ipynb.markup&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Menu Item设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MENUITEMS = ((&amp;quot;ITEM1&amp;quot;,&amp;quot;http://github.com&amp;quot;),
+         (&amp;quot;ITEM2&amp;quot;,URL),
+        ......)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;BlogRoll和Social设置&lt;/h3&gt;
+&lt;p&gt;设置一些Blog链接，通过设置LINKS实现,具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LINKS =  ((&amp;quot;Github&amp;quot;, &amp;quot;https://github.com&amp;quot;),
+  (&amp;quot;Cnblogs&amp;quot;, URL),)
+SOCIAL = ((&amp;quot;博客园&amp;quot;, &amp;quot;http://www.cnblogs.com&amp;quot;),
+     (&amp;quot;Github&amp;#39;,&amp;#39;http://github.com&amp;quot;),)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;发布博客站点&lt;/h3&gt;
+&lt;p&gt;三种方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pelican命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content -s publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;fabric&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install fabric
+fab build
+fab regenerate
+fab serve
+fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make html
+make regenerate
+make serve
+make devserver
+./develop_server.sh stop
+&lt;/pre&gt;&lt;/div&gt;</content><category term="R，linegression，code"></category></entry><entry><title>test2</title><link href="http://localhost:8000/./articles/1499656175/" rel="alternate"></link><published>2017-07-09T14:00:00+08:00</published><updated>2017-07-09T14:00:00+08:00</updated><author><name>Joshua</name></author><id>tag:localhost,2017-07-09:/./articles/1499656175/</id><summary type="html">&lt;p&gt;My first post,read it to find out.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;采用pelican搭建数据科学博客&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;环境&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本地环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）&lt;/p&gt;
+&lt;p&gt;Python 3.5&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ubuntu 16.04（AWS云服务）&lt;/p&gt;
+&lt;p&gt;python 3.5&lt;/p&gt;
+&lt;h2&gt;博客框架&lt;/h2&gt;
+&lt;p&gt;通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击&lt;code&gt;Enter&lt;/code&gt;接受默认即可，后续可以在&lt;code&gt;pelicanconf.py&lt;/code&gt;文件里更改配置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(blogs) D:\Python\envs\blogs\blog&amp;gt;pelican-quickstart
+Welcome to pelican-quickstart v3.7.1.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files needed by Pelican.
+
+
+&amp;gt; Where do you want to create your new web site? [.]
+&amp;gt; What will be the title of this web site? Joshua&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Joshua Zou
+&amp;gt; What will be the default language of this web site? [Chinese (Simplified)]
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n)
+&amp;gt; How many articles per page do you want? [10]
+&amp;gt; What is your time zone? [Europe/Paris] Asia/Shanghai
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n)
+&amp;gt; Do you want to upload your website using FTP? (y/N)
+&amp;gt; Do you want to upload your website using SSH? (y/N)
+&amp;gt; Do you want to upload your website using Dropbox? (y/N)
+&amp;gt; Do you want to upload your website using S3? (y/N)
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N)
+Done. Your new project is available at D:\Python\envs\blogs\blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成后会在相应的目录里生成如下基础框架结构及文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
+├── output             # 将blog文件转化成相应的html及相应文件的存放目录
+├── develop_server.sh  # pelican简易web服务器操作文件
+├── Makefile           # 方便管理博客的Make命令文件
+├── fabfile.py         # 与make类似，可用fab publish，fab server命令
+├── pelicanconf.py     # 本地开发时的配置文件
+└── publishconf.py     # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;后续配置完整后，框架如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
+|--output                # 将blog文件转化成相应的html及相应文件的存放目录
+   └──.git               # 执行git init之后，产生的远程仓库目录
+|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
+|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
+|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
+|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
+|  └──tag                # 目录，存放编辑器开头所指定的Tag
+|  └──theme              # 目录，存放博客模板文件
+|  └──archives.html,authors.html,categories.html,index.html, tags.html
+|——pelican-plugins       # 目录，pelican插件
+|——pelican-themes        # 目录，pelican主题
+|——develop_server.sh     # pelican简易web服务器操作文件
+|——Makefile              # make 命令文件
+|——fabfile.py            # 与make类似，可用fab publish, fab server命令
+|——pelicanconf.py        # 本地开发时的配置文件
+|——publishconf.py        # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Git远程仓库配置&lt;/h2&gt;
+&lt;p&gt;要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd output
+git init         #产生一个.git文件夹
+git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Feed设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FEED_RSS = u&amp;quot;feeds/all.rss.xml&amp;quot; 
+CATEGORY_FEED_RSS=u&amp;quot;feeds/%s.rss.xml&amp;quot;    #为分类添加Feed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;主题设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题,有些主题下载下来为空需要自己重新找下该主题的链接重新下载安装下
+cd pelican-themes
+git clone https://github.com/kdeldycke/plumage.git
+pelican-themes -i plumage  #可换成你自己的theme
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;主题头像设置&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+└── content/
+  └── images/
+      └──yourheaderimage.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在配置文件&lt;code&gt;pelicanconf.py&lt;/code&gt;中添加设置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;STATIC_PATHS = [&amp;#39;images&amp;#39;]
+HEADER_IMAGE = &amp;quot;yourheaderimage.png&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Disqus第三方评论&lt;/h3&gt;
+&lt;p&gt;第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Site name: {your git account name}.github.io
+Admin URL: {Shortname}.disqus.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Plugin设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-plugins.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;获取全部插件&lt;code&gt;git clone https://github.com/getpelican/pelican-plugins.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Jupyter插件&lt;/h3&gt;
+&lt;p&gt;Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;执行&lt;code&gt;git init&lt;/code&gt;将当前文件夹初始化为一个git仓库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建&lt;code&gt;plugins&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;在plugins文件夹中执行&lt;code&gt;git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb&lt;/code&gt;来添加插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MARKUP = (&amp;#39;md&amp;#39;, &amp;#39;ipynb&amp;#39;)
+PLUGIN_PATHS = [ &amp;#39;./plugins&amp;#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
+PLUGINS = [&amp;#39;ipynb.markup&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Menu Item设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MENUITEMS = ((&amp;quot;ITEM1&amp;quot;,&amp;quot;http://github.com&amp;quot;),
+         (&amp;quot;ITEM2&amp;quot;,URL),
+        ......)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;BlogRoll和Social设置&lt;/h3&gt;
+&lt;p&gt;设置一些Blog链接，通过设置LINKS实现,具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LINKS =  ((&amp;quot;Github&amp;quot;, &amp;quot;https://github.com&amp;quot;),
+  (&amp;quot;Cnblogs&amp;quot;, URL),)
+SOCIAL = ((&amp;quot;博客园&amp;quot;, &amp;quot;http://www.cnblogs.com&amp;quot;),
+     (&amp;quot;Github&amp;#39;,&amp;#39;http://github.com&amp;quot;),)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;发布博客站点&lt;/h3&gt;
+&lt;p&gt;三种方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pelican命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content -s publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;fabric&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install fabric
+fab build
+fab regenerate
+fab serve
+fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make html
+make regenerate
+make serve
+make devserver
+./develop_server.sh stop
+&lt;/pre&gt;&lt;/div&gt;</content><category term="pelican，numpy，blogs"></category></entry><entry><title>test1</title><link href="http://localhost:8000/./articles/1499656148/" rel="alternate"></link><published>2017-07-08T14:00:00+08:00</published><updated>2017-07-08T14:00:00+08:00</updated><author><name>Joshua</name></author><id>tag:localhost,2017-07-08:/./articles/1499656148/</id><summary type="html">&lt;p&gt;My first post,read it to find out.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;采用pelican搭建数据科学博客&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;环境&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本地环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）&lt;/p&gt;
+&lt;p&gt;Python 3.5&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ubuntu 16.04（AWS云服务）&lt;/p&gt;
+&lt;p&gt;python 3.5&lt;/p&gt;
+&lt;h2&gt;博客框架&lt;/h2&gt;
+&lt;p&gt;通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击&lt;code&gt;Enter&lt;/code&gt;接受默认即可，后续可以在&lt;code&gt;pelicanconf.py&lt;/code&gt;文件里更改配置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(blogs) D:\Python\envs\blogs\blog&amp;gt;pelican-quickstart
+Welcome to pelican-quickstart v3.7.1.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files needed by Pelican.
+
+
+&amp;gt; Where do you want to create your new web site? [.]
+&amp;gt; What will be the title of this web site? Joshua&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Joshua Zou
+&amp;gt; What will be the default language of this web site? [Chinese (Simplified)]
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n)
+&amp;gt; How many articles per page do you want? [10]
+&amp;gt; What is your time zone? [Europe/Paris] Asia/Shanghai
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n)
+&amp;gt; Do you want to upload your website using FTP? (y/N)
+&amp;gt; Do you want to upload your website using SSH? (y/N)
+&amp;gt; Do you want to upload your website using Dropbox? (y/N)
+&amp;gt; Do you want to upload your website using S3? (y/N)
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N)
+Done. Your new project is available at D:\Python\envs\blogs\blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成后会在相应的目录里生成如下基础框架结构及文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
+├── output             # 将blog文件转化成相应的html及相应文件的存放目录
+├── develop_server.sh  # pelican简易web服务器操作文件
+├── Makefile           # 方便管理博客的Make命令文件
+├── fabfile.py         # 与make类似，可用fab publish，fab server命令
+├── pelicanconf.py     # 本地开发时的配置文件
+└── publishconf.py     # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;后续配置完整后，框架如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
+|--output                # 将blog文件转化成相应的html及相应文件的存放目录
+   └──.git               # 执行git init之后，产生的远程仓库目录
+|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
+|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
+|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
+|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
+|  └──tag                # 目录，存放编辑器开头所指定的Tag
+|  └──theme              # 目录，存放博客模板文件
+|  └──archives.html,authors.html,categories.html,index.html, tags.html
+|——pelican-plugins       # 目录，pelican插件
+|——pelican-themes        # 目录，pelican主题
+|——develop_server.sh     # pelican简易web服务器操作文件
+|——Makefile              # make 命令文件
+|——fabfile.py            # 与make类似，可用fab publish, fab server命令
+|——pelicanconf.py        # 本地开发时的配置文件
+|——publishconf.py        # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Git远程仓库配置&lt;/h2&gt;
+&lt;p&gt;要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd output
+git init         #产生一个.git文件夹
+git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Feed设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FEED_RSS = u&amp;quot;feeds/all.rss.xml&amp;quot; 
+CATEGORY_FEED_RSS=u&amp;quot;feeds/%s.rss.xml&amp;quot;    #为分类添加Feed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;主题设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题,有些主题下载下来为空需要自己重新找下该主题的链接重新下载安装下
+cd pelican-themes
+git clone https://github.com/kdeldycke/plumage.git
+pelican-themes -i plumage  #可换成你自己的theme
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;主题头像设置&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+└── content/
+  └── images/
+      └──yourheaderimage.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在配置文件&lt;code&gt;pelicanconf.py&lt;/code&gt;中添加设置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;STATIC_PATHS = [&amp;#39;images&amp;#39;]
+HEADER_IMAGE = &amp;quot;yourheaderimage.png&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Disqus第三方评论&lt;/h3&gt;
+&lt;p&gt;第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Site name: {your git account name}.github.io
+Admin URL: {Shortname}.disqus.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Plugin设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-plugins.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;获取全部插件&lt;code&gt;git clone https://github.com/getpelican/pelican-plugins.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Jupyter插件&lt;/h3&gt;
+&lt;p&gt;Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;执行&lt;code&gt;git init&lt;/code&gt;将当前文件夹初始化为一个git仓库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建&lt;code&gt;plugins&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;在plugins文件夹中执行&lt;code&gt;git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb&lt;/code&gt;来添加插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MARKUP = (&amp;#39;md&amp;#39;, &amp;#39;ipynb&amp;#39;)
+PLUGIN_PATHS = [ &amp;#39;./plugins&amp;#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
+PLUGINS = [&amp;#39;ipynb.markup&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Menu Item设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MENUITEMS = ((&amp;quot;ITEM1&amp;quot;,&amp;quot;http://github.com&amp;quot;),
+         (&amp;quot;ITEM2&amp;quot;,URL),
+        ......)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;BlogRoll和Social设置&lt;/h3&gt;
+&lt;p&gt;设置一些Blog链接，通过设置LINKS实现,具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LINKS =  ((&amp;quot;Github&amp;quot;, &amp;quot;https://github.com&amp;quot;),
+  (&amp;quot;Cnblogs&amp;quot;, URL),)
+SOCIAL = ((&amp;quot;博客园&amp;quot;, &amp;quot;http://www.cnblogs.com&amp;quot;),
+     (&amp;quot;Github&amp;#39;,&amp;#39;http://github.com&amp;quot;),)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;发布博客站点&lt;/h3&gt;
+&lt;p&gt;三种方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pelican命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content -s publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;fabric&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install fabric
+fab build
+fab regenerate
+fab serve
+fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make html
+make regenerate
+make serve
+make devserver
+./develop_server.sh stop
+&lt;/pre&gt;&lt;/div&gt;</content><category term="data，blogs"></category></entry><entry><title>test3</title><link href="http://localhost:8000/./articles/1499656216/" rel="alternate"></link><published>2017-07-07T14:00:00+08:00</published><updated>2017-07-07T14:00:00+08:00</updated><author><name>Joshua</name></author><id>tag:localhost,2017-07-07:/./articles/1499656216/</id><summary type="html">&lt;p&gt;My first post,read it to find out.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;采用pelican搭建数据科学博客&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;环境&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本地环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）&lt;/p&gt;
+&lt;p&gt;Python 3.5&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ubuntu 16.04（AWS云服务）&lt;/p&gt;
+&lt;p&gt;python 3.5&lt;/p&gt;
+&lt;h2&gt;博客框架&lt;/h2&gt;
+&lt;p&gt;通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击&lt;code&gt;Enter&lt;/code&gt;接受默认即可，后续可以在&lt;code&gt;pelicanconf.py&lt;/code&gt;文件里更改配置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(blogs) D:\Python\envs\blogs\blog&amp;gt;pelican-quickstart
+Welcome to pelican-quickstart v3.7.1.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files needed by Pelican.
+
+
+&amp;gt; Where do you want to create your new web site? [.]
+&amp;gt; What will be the title of this web site? Joshua&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Joshua Zou
+&amp;gt; What will be the default language of this web site? [Chinese (Simplified)]
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n)
+&amp;gt; How many articles per page do you want? [10]
+&amp;gt; What is your time zone? [Europe/Paris] Asia/Shanghai
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n)
+&amp;gt; Do you want to upload your website using FTP? (y/N)
+&amp;gt; Do you want to upload your website using SSH? (y/N)
+&amp;gt; Do you want to upload your website using Dropbox? (y/N)
+&amp;gt; Do you want to upload your website using S3? (y/N)
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N)
+Done. Your new project is available at D:\Python\envs\blogs\blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成后会在相应的目录里生成如下基础框架结构及文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
+├── output             # 将blog文件转化成相应的html及相应文件的存放目录
+├── develop_server.sh  # pelican简易web服务器操作文件
+├── Makefile           # 方便管理博客的Make命令文件
+├── fabfile.py         # 与make类似，可用fab publish，fab server命令
+├── pelicanconf.py     # 本地开发时的配置文件
+└── publishconf.py     # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;后续配置完整后，框架如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
+|--output                # 将blog文件转化成相应的html及相应文件的存放目录
+   └──.git               # 执行git init之后，产生的远程仓库目录
+|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
+|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
+|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
+|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
+|  └──tag                # 目录，存放编辑器开头所指定的Tag
+|  └──theme              # 目录，存放博客模板文件
+|  └──archives.html,authors.html,categories.html,index.html, tags.html
+|——pelican-plugins       # 目录，pelican插件
+|——pelican-themes        # 目录，pelican主题
+|——develop_server.sh     # pelican简易web服务器操作文件
+|——Makefile              # make 命令文件
+|——fabfile.py            # 与make类似，可用fab publish, fab server命令
+|——pelicanconf.py        # 本地开发时的配置文件
+|——publishconf.py        # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Git远程仓库配置&lt;/h2&gt;
+&lt;p&gt;要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd output
+git init         #产生一个.git文件夹
+git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Feed设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FEED_RSS = u&amp;quot;feeds/all.rss.xml&amp;quot; 
+CATEGORY_FEED_RSS=u&amp;quot;feeds/%s.rss.xml&amp;quot;    #为分类添加Feed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;主题设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题,有些主题下载下来为空需要自己重新找下该主题的链接重新下载安装下
+cd pelican-themes
+git clone https://github.com/kdeldycke/plumage.git
+pelican-themes -i plumage  #可换成你自己的theme
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;主题头像设置&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+└── content/
+  └── images/
+      └──yourheaderimage.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在配置文件&lt;code&gt;pelicanconf.py&lt;/code&gt;中添加设置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;STATIC_PATHS = [&amp;#39;images&amp;#39;]
+HEADER_IMAGE = &amp;quot;yourheaderimage.png&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Disqus第三方评论&lt;/h3&gt;
+&lt;p&gt;第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Site name: {your git account name}.github.io
+Admin URL: {Shortname}.disqus.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Plugin设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-plugins.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;获取全部插件&lt;code&gt;git clone https://github.com/getpelican/pelican-plugins.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Jupyter插件&lt;/h3&gt;
+&lt;p&gt;Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;执行&lt;code&gt;git init&lt;/code&gt;将当前文件夹初始化为一个git仓库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建&lt;code&gt;plugins&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;在plugins文件夹中执行&lt;code&gt;git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb&lt;/code&gt;来添加插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MARKUP = (&amp;#39;md&amp;#39;, &amp;#39;ipynb&amp;#39;)
+PLUGIN_PATHS = [ &amp;#39;./plugins&amp;#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
+PLUGINS = [&amp;#39;ipynb.markup&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Menu Item设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MENUITEMS = ((&amp;quot;ITEM1&amp;quot;,&amp;quot;http://github.com&amp;quot;),
+         (&amp;quot;ITEM2&amp;quot;,URL),
+        ......)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;BlogRoll和Social设置&lt;/h3&gt;
+&lt;p&gt;设置一些Blog链接，通过设置LINKS实现,具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LINKS =  ((&amp;quot;Github&amp;quot;, &amp;quot;https://github.com&amp;quot;),
+  (&amp;quot;Cnblogs&amp;quot;, URL),)
+SOCIAL = ((&amp;quot;博客园&amp;quot;, &amp;quot;http://www.cnblogs.com&amp;quot;),
+     (&amp;quot;Github&amp;#39;,&amp;#39;http://github.com&amp;quot;),)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;发布博客站点&lt;/h3&gt;
+&lt;p&gt;三种方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pelican命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content -s publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;fabric&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install fabric
+fab build
+fab regenerate
+fab serve
+fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make html
+make regenerate
+make serve
+make devserver
+./develop_server.sh stop
+&lt;/pre&gt;&lt;/div&gt;</content><category term="pelican，plot，blogs"></category><category term="R"></category></entry><entry><title>采用pelican搭建数据科学博客</title><link href="http://localhost:8000/./articles/pelican-blog/" rel="alternate"></link><published>2017-07-07T14:00:00+08:00</published><updated>2017-07-07T14:00:00+08:00</updated><author><name>Joshua</name></author><id>tag:localhost,2017-07-07:/./articles/pelican-blog/</id><summary type="html">&lt;p&gt;My first post,read it to find out.&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
+&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;环境&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本地环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）&lt;/p&gt;
+&lt;p&gt;Python 3.5&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ubuntu 16.04（AWS云服务）&lt;/p&gt;
+&lt;p&gt;python 3.5&lt;/p&gt;
+&lt;h2&gt;博客框架&lt;/h2&gt;
+&lt;p&gt;通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击&lt;code&gt;Enter&lt;/code&gt;接受默认即可，后续可以在&lt;code&gt;pelicanconf.py&lt;/code&gt;文件里更改配置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(blogs) D:\Python\envs\blogs\blog&amp;gt;pelican-quickstart
+Welcome to pelican-quickstart v3.7.1.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files needed by Pelican.
+
+
+&amp;gt; Where do you want to create your new web site? [.]
+&amp;gt; What will be the title of this web site? Joshua&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Joshua Zou
+&amp;gt; What will be the default language of this web site? [Chinese (Simplified)]
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n)
+&amp;gt; How many articles per page do you want? [10]
+&amp;gt; What is your time zone? [Europe/Paris] Asia/Shanghai
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n)
+&amp;gt; Do you want to upload your website using FTP? (y/N)
+&amp;gt; Do you want to upload your website using SSH? (y/N)
+&amp;gt; Do you want to upload your website using Dropbox? (y/N)
+&amp;gt; Do you want to upload your website using S3? (y/N)
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N)
+Done. Your new project is available at D:\Python\envs\blogs\blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成后会在相应的目录里生成如下基础框架结构及文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
+├── output             # 将blog文件转化成相应的html及相应文件的存放目录
+├── develop_server.sh  # pelican简易web服务器操作文件
+├── Makefile           # 方便管理博客的Make命令文件
+├── fabfile.py         # 与make类似，可用fab publish，fab server命令
+├── pelicanconf.py     # 本地开发时的配置文件
+└── publishconf.py     # 发布时的配置文件，可删除
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;后续配置完整后，框架如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog/
+|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
+|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
+|--output                # 将blog文件转化成相应的html及相应文件的存放目录
+   └──.git               # 执行git init之后，产生的远程仓库目录
+|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
+|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
+|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
+|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
+|  └──tag                # 目录，存放编辑器开头所指定的Tag
+|  └──theme              # 目录，存放博客模板文件
+|  └──archives.html,authors.html,categories.html,index.html, tags.html
+|——pelican-plugins       # 目录，pelican插件
+|——pelican-themes        # 目录，pelican主题
+|——develop_server.sh     # pelican简易web服务器操作文件
+|——Makefile              # make 命令文件
+|——fabfile.py            # 与make类似，可用fab publish, fab server命令
+|——pelicanconf.py        # 本地开发时的配置文件
+|——publishconf.py        # 发布时的配置文件，可删除
+|——.gitignore            # 上传Git时排除指定类型文件
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Git远程仓库配置&lt;/h2&gt;
+&lt;p&gt;创建一个叫做.gitignore的文件，并添加入这个&lt;a href="https://github.com/github/gitignore/blob/master/Python.gitignore"&gt;文件&lt;/a&gt;的内容。最终我们将会把文件提交到Git, .gitignore将会排除指定类型的文件。&lt;/p&gt;
+&lt;p&gt;要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd output
+git init         #产生一个.git文件夹
+git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Feed设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FEED_RSS = u&amp;quot;feeds/all.rss.xml&amp;quot; 
+CATEGORY_FEED_RSS=u&amp;quot;feeds/%s.rss.xml&amp;quot;    #为分类添加Feed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;主题设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题
+cd pelican-themes
+pelican-themes -i jojo  #可换成你自己的theme
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Disqus第三方评论&lt;/h3&gt;
+&lt;p&gt;第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Site name: {your git account name}.github.io
+Admin URL: {Shortname}.disqus.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Plugin设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/getpelican/pelican-plugins.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;获取全部插件&lt;code&gt;git clone https://github.com/getpelican/pelican-plugins.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Jupyter插件&lt;/h3&gt;
+&lt;p&gt;Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;执行&lt;code&gt;git init&lt;/code&gt;将当前文件夹初始化为一个git仓库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建&lt;code&gt;plugins&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;在plugins文件夹中执行&lt;code&gt;git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb&lt;/code&gt;来添加插件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MARKUP = (&amp;#39;md&amp;#39;, &amp;#39;ipynb&amp;#39;)
+PLUGIN_PATHS = [ &amp;#39;./plugins&amp;#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
+PLUGINS = [&amp;#39;ipynb.markup&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Menu Item设置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MENUITEMS = ((&amp;quot;ITEM1&amp;quot;,&amp;quot;http://github.com&amp;quot;),
+         (&amp;quot;ITEM2&amp;quot;,URL),
+        ......)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;BlogRoll和Social设置&lt;/h3&gt;
+&lt;p&gt;设置一些Blog链接，通过设置LINKS实现,具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LINKS =  ((&amp;quot;Github&amp;quot;, &amp;quot;https://github.com&amp;quot;),
+  (&amp;quot;Cnblogs&amp;quot;, URL),)
+SOCIAL = ((&amp;quot;博客园&amp;quot;, &amp;quot;http://www.cnblogs.com&amp;quot;),
+     (&amp;quot;Github&amp;#39;,&amp;#39;http://github.com&amp;quot;),)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;发布博客站点&lt;/h3&gt;
+&lt;p&gt;三种方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pelican命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content -s publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;fabric&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install fabric
+fab build
+fab regenerate
+fab serve
+fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;make&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make html
+make regenerate
+make serve
+make devserver
+./develop_server.sh stop
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;撰写并发布第一篇blog&lt;/h2&gt;
+&lt;p&gt;插件配置等都完成后，就可以开始书写第一篇Blog了。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;创建一个Markdown文件，书写自己想记录的blog内容。&lt;/li&gt;
+&lt;li&gt;在Markdown文件开头加入文档的头信息。&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;把书写完成的Markdown文件复制到&lt;code&gt;content&lt;/code&gt;目录下。&lt;/p&gt;
+&lt;blockquote&gt;&lt;/blockquote&gt;
+&lt;p&gt;Title: pelican搭建博客        # blog的标题
+Author: Joshua               # blog作者名字
+Date: 2017/7/7 14:02:40      # blog发布日期
+Category: Pelican            # blog类别
+Tags: pelican，python，blogs # blog的标签
+Slug: pelican-blog           # blog在服务器上的路径，是文档的唯一标识，生成html时直接用这个值做html的文件名
+Summary: My first post,read it to find out.  # blog的摘要&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content><category term="pelican，python，blogs"></category></entry></feed>
