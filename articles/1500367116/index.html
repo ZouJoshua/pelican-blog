@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Joshua's Blog--一生所求  爱与自由  你与温柔</title>
+    <meta name="description" content="" />
+    <meta name="Author" content="Joshua Zou()" />
+
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="http://stepofweb.gweb.io/.templates/IsisOne/HTML/assets/plugins/lt-ie9/html5.js"></script>
+    <script type="text/javascript" src="http://stepofweb.gweb.io/.templates/IsisOne/HTML/assets/plugins/lt-ie9/respond.min.js"></script>
+    <script type="text/javascript" src="http://stepofweb.gweb.io/.templates/IsisOne/HTML/assets/plugins/lt-ie9/excanvas.compiled.js"></script>
+    <![endif]-->
+
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800|Dosis:300,400" rel="stylesheet" type="text/css" />
+
+
+    <!-- CORE CSS FRAMEWORK -->
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    <!-- CSS TEMPLATE -->
+    <link href="/theme/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="/theme/css/framework.css" rel="stylesheet" type="text/css" />
+    <link href="/theme/css/typography.css" rel="stylesheet" type="text/css" />
+    <link href="/theme/css/layout.css" rel="stylesheet" type="text/css" />
+
+    <link href="/theme/css/blog.css" rel="stylesheet" type="text/css" />
+
+    <!-- ICONS -->
+        <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
+        <link rel="icon" href="/images/logo.png" type="image/x-icon" />
+
+    <!-- mobile settings -->
+    <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0" />
+
+    <!-- Morenizr -->
+    <script type="text/javascript" src="/theme/js/modernizr.min.js"></script>
+
+    <!-- google authorship -->
+</head>
+<body>
+
+<!-- Main Nav -->
+<header id="header" style="margin-top:0">
+
+  <nav class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenu" class="fa fa-bars" type="button" data-toggle="collapse" data-target=".navbar-collapse"></button>
+
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand scrollTo" href="#home">
+          <img src="/images/header_image.png" alt="" width="60" height="60" />
+          <span class="hidden-xs">Joshua&#39;s Blog</span>
+        </a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <!-- Fullscreen Button - Unavailable for IE -->
+        <a href="#" class="btn-fullscreen"><i class="fa fa-external-link"></i></a>
+
+        <ul class="nav navbar-nav navbar-right">
+          <!-- If the user wants to make articles the home page then remove blog link, and make about and work links point to old home page. -->
+            <li><a href="/index.html#home">Home</a></li>
+            <li><a href="/index.html#about">About</a></li>
+            <li><a href="/blog.html">Blog</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links <b class="caret"></b></a>
+              <ul class="dropdown-menu" style="background-color:#000">
+                <li style="background-color:#000"><a href="https://weichangit.github.io/" target="_blank">魏畅的Blog</a></li>
+                <li style="background-color:#000"><a href="http://python.org/" target="_blank">Python.org</a></li>
+                <li style="background-color:#000"><a href="http://jinja.pocoo.org/" target="_blank">Jinja2</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+
+    </div>
+  </nav>
+</header>
+<!-- /Main Nav -->  <section id="blog">
+    <article class="container">
+
+      <div class="row">
+        <div id="blog_main_area" class="left col-md-9">
+  <!-- article title -->
+  <header>
+      <h1>将本地项目上传到Github</h1>
+    <small class="fsize13">
+            <a href="/category/git.html" rel="tag tooltip" class="label label-default light" data-placement="right" data-original-title="1 article in this category"><i class="fa fa-dot-circle-o"></i> Git</a>
+      <a href="/articles/1500367116/#disqus_thread" class="scrollTo label label-default light" data-disqus-identifier="articles/1500367116/"><i class="fa fa-comment-o"></i>  Comments</a>
+      <span class="label label-default light">2017-07-17 周一</span> 
+    </small>
+  </header>
+
+  <article class='content'>
+    <h1>将本地项目上传到Github</h1>
+<p>本次操作需要用到管理工具<code>Git</code>，<a href="https://git-scm.com/">点击下载</a>。</p>
+<h2>本地Git仓库设置</h2>
+<ol>
+<li>
+<p>创建Git配置文件。</p>
+<p>通过命令<code>git init</code>把即将要上传的本地项目文件夹变成Git可管理的仓库，即创建该项目的本地版本库。你会发现你的文件下生成一个<code>.git</code>文件夹，默认是隐藏文件。可通过<code>git status</code>来查看你当前的状态。Git安装好之后，打开所要上传的项目文件夹，鼠标右键点击windows系统下选择<code>Git Bash Here</code>。</p>
+<div class="highlight"><pre><span></span>$ git init
+$ git status
+</pre></div>
+
+
+<p><img alt="图片1" src="http://i.imgur.com/IL1rdhx.png"></p>
+</li>
+<li>
+<p>通过<code>git add .</code>（.和add之间有空格）将当前所有文件添加到仓库上，仍可通过<code>git status</code>来查看你当前的状态。</p>
+<div class="highlight"><pre><span></span>$ git add .
+$ git status
+</pre></div>
+
+
+<p><img alt="图片2" src="http://i.imgur.com/UmgDwI5.png"></p>
+</li>
+<li>
+<p>用<code>git commit</code>把项目提交到仓库，<code>-m</code>后面引号里面是本次提交的注释内容，这个可以不写，但最好写上，不然会报错，详情自行Google。</p>
+<div class="highlight"><pre><span></span>$ git commit -m <span class="s2">&quot;commit blog&quot;</span>
+</pre></div>
+
+
+<p><img alt="图片3" src="http://i.imgur.com/CjcobJ0.png"></p>
+<p>本地Git仓库这边的工作做完了，下面就到了连接远程仓库（也就是连接Github）</p>
+</li>
+</ol>
+<h2>远程仓库Github设置</h2>
+<p>本地Git仓库和Github仓库之间的传输是通过SSH加密的，所以连接时需要设置一下，先在本地生成一<code>.ssh</code>。</p>
+<ol>
+<li>
+<p>创建SSH KEY，先查看本地是否有.ssh文件，有的话删掉。</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/.ssh
+</pre></div>
+
+
+</li>
+<li>
+<p>输入命令，生成.ssh，写你自己的邮箱</p>
+<div class="highlight"><pre><span></span>$ ssh-keygen -t rsa -C <span class="s2">&quot;your email@.com&quot;</span>
+</pre></div>
+
+
+<p>一直回车就可以，这样就表示成功了，会在C盘的用户目录的根目录下生成一个<code>.ssh</code>文件，如果找不到，可以搜索一下，文件下会有<code>id_rsa</code>与<code>id_rsa.pug</code>两个文件。
+<img alt="图片4" src="http://i.imgur.com/1NknRPR.png"></p>
+<p>本地目录下生成的文件：</p>
+</li>
+</ol>
+<p><img alt="图片5" src="http://i.imgur.com/YAGYPRi.png"></p>
+<ol>
+<li>
+<p>为了避免与Github创建连接时出错，可以新建一个config文件，将以下代码复制进去：</p>
+<div class="highlight"><pre><span></span>Host github.com
+User git
+Hostname ssh.github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa
+Port 443
+</pre></div>
+
+
+</li>
+<li>
+<p>登录Github，找到右上角的图标，打开点进里面的<code>Settings</code>，再选中里面的<code>SSH and GPG KEYS</code>，点击右上角的<code>New SSH key</code>，然后<code>Title</code>里面随便填，再把刚才<code>id_rsa.pub</code>里面的内容复制到<code>Title</code>下面的<code>Key</code>内容框里面，最后点击<code>Add SSH key</code>，这样就完成了SSH Key的加密。</p>
+</li>
+</ol>
+<p><img alt="图片6" src="http://i.imgur.com/AxCcxg3.png">
+5. 测试连接是否成功，下图表示访问成功</p>
+<div class="highlight"><pre><span></span>    $ ssh -t git@github.com
+</pre></div>
+
+
+<p><img alt="图片7" src="http://i.imgur.com/DXkZk93.png">
+6. 在Github上创建一个Git仓库。
+    <em>此时如果你勾选了<code>Initialize this repository with a README</code>（就是创建仓库的时候自动给你创建一个README文件），那么到了第8步你将本地仓库内容推送到远程仓库的时候就会报一个</em>failed to push some refs to https://github.com/guyibang/TEST2.git<em>的错误,这是由于你新创建的那个仓库里面的README文件不在本地仓库目录中，解决方法见第8步。</em></p>
+<p><img alt="图片8" src="http://i.imgur.com/D71K5mn.png">
+7. Github上创建好Git仓库之后我们就可以和本地仓库进行关联了，注意origin后面加的是你Github上创建好的仓库的地址。根据创建好的Git仓库页面的提示，可以在本地blog仓库的命令行输入：</p>
+<div class="highlight"><pre><span></span>    $ git remote add origin https://github.com/ZouJoshua/pelican-blog.git
+</pre></div>
+
+
+<p><img alt="图片9" src="http://i.imgur.com/4z7h5BP.png">
+    解决办法：</p>
+<div class="highlight"><pre><span></span>    先输入：$ git remote rm origin
+    再输入：$ git remote add origin https://github.com/ZouJoshua/pelican-blog.git
+</pre></div>
+
+
+<ol>
+<li>
+<p>关联好之后就可以把本地库的所有内容推送到远程仓库（也就是Github）上了</p>
+<div class="highlight"><pre><span></span>$ git push -u origin master
+</pre></div>
+
+
+<p>由于新建的远程仓库是空的，所以要加上<code>-u</code>这个参数，等远程仓库里面有了内容之后，下次再从本地库上传内容的时候只需下面这样就可以了。</p>
+<div class="highlight"><pre><span></span>$ git push origin master
+</pre></div>
+
+
+<p>此时，推送时，会出现如下错误：</p>
+</li>
+</ol>
+<p><img alt="图片10" src="http://i.imgur.com/9nh2vZb.png"></p>
+<div class="highlight"><pre><span></span>这是由于新创建的那个仓库里面的README文件不在本地仓库目录中，这时我们可以通过以下命令先将内容合并：
+
+    $ git pull --rebase origin master
+然后再`git push`，登录Github查看，就会将自己的项目上传到Github。
+</pre></div>
+  </article>
+
+  <div class="divider"><!-- lines divider --></div>
+
+  <!-- SOCIAL -->
+<p class="socials">
+    <a href="http://www.facebook.com/sharer/sharer.php?u=/articles/1500367116/" class="rounded-icon social fa fa-facebook" target="_blank" title="Share on Facebook"><!-- facebook --></a>
+    <a href="http://twitter.com/home?status=/articles/1500367116/" class="rounded-icon social fa fa-twitter" target="_blank" title="Share on Twitter"><!-- twitter --></a>
+    <a href="https://plus.google.com/share?url=/articles/1500367116/" class="rounded-icon social fa fa-google-plus" target="_blank" title="Share on Google+"><!-- google plus --></a>
+    <a href="http://pinterest.com/pin/create/link/?url==/articles/1500367116/" class="rounded-icon social fa fa-pinterest"  target="_blank" title="Share on Pinterest"><!-- pinterest --></a>
+    <a href="http://www.linkedin.com/shareArticle?mini=true&url=/articles/1500367116/&title=将本地项目上传到Github&summary=&source=" class="rounded-icon social fa fa-linkedin" target="_blank" title="Share on Linkedin"><!-- linkedin --></a>
+        <!-- JiaThis Button BEGIN -->
+        <div class="jiathis_style">
+            <span class="jiathis_txt">分享到：</span>
+            <a class="jiathis_button_tools_1"></a>
+            <a class="jiathis_button_tools_2"></a>
+            <a class="jiathis_button_tools_3"></a>
+            <a class="jiathis_button_tools_4"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+            <a class="jiathis_counter_style"></a>
+        </div>
+        <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+        <!-- JiaThis Button END -->
+</p>  
+
+  <!-- TAGS -->
+  <p class="fsize16"> Tags:
+        <a href="/tag/blogsgitlinux.html" rel="tooltip" class="label label-default light" data-placement="right" data-original-title="1 article with this tag"><i class="fa fa-tags"></i> blogs，git，linux</a>
+  </p>
+
+  <hr /><!-- divider -->
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="right col-md-3">
+          <!-- blog search -->
+          <div class="widget">
+
+            <h3>Blog Search</h3>
+
+            <form action="#" method="get" class="blog-search col-lg-12 nomargin nopadding">
+              <div class="input-group input-group-lg">
+                <input type="text" class="form-control" name="s" id="st-search-input" placeholder="..." />
+                <script type="text/javascript">
+                var Swiftype = window.Swiftype ||
+                {};
+                (function()
+                {
+                  Swiftype.key = 'True';
+
+                  /** DO NOT EDIT BELOW THIS LINE **/
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.async = true;
+                  script.src = "//s.swiftypecdn.com/embed.js";
+                  var entry = document.getElementsByTagName('script')[0];
+                  entry.parentNode.insertBefore(script, entry);
+                }());
+                </script>
+              </div>
+            </form>
+          </div>
+          <!-- recent work -->
+          <!-- <div class="widget">
+
+                      <h3>Recent Work</h3>
+
+                      <a class="popup-image thumb" href="assets/images/preview/slider/1.jpg">
+                          <img src="/theme/img/1x1.png" class="img-responsive" data-src="holder.js/85x85/#888:#555555/auto/" alt="img" />
+                      </a>
+                      <a class="popup-video thumb" href="http://www.youtube.com/watch?v=kh29_SERH0Y?rel=0">
+                          <img src="/theme/img/1x1.png" class="ajax-project img-responsive" data-src="holder.js/85x85/#676767:#555555/auto/" alt="img" />
+                      </a>
+                      <a class="popup-video thumb" href="http://vimeo.com/23630702">
+                          <img src="/theme/img/1x1.png" class="ajax-project img-responsive" data-src="holder.js/85x85/#888:#555555/auto/" alt="img" />
+                      </a>
+
+                      <a class="external ajax-project thumb" href="project-external-1.html">
+                          <img src="/theme/img/1x1.png" class="ajax-project img-responsive" data-src="holder.js/85x85/#676767:#555555/auto/" alt="img" />
+                      </a>
+                      <a class="external ajax-project thumb" href="project-external-2.html">
+                          <img src="/theme/img/1x1.png" class="ajax-project img-responsive" data-src="holder.js/85x85/#888:#555555/auto/" alt="img" />
+                      </a>
+                      <a class="external ajax-project thumb" href="project-external-3.html">
+                          <img src="/theme/img/1x1.png" class="ajax-project img-responsive" data-src="holder.js/85x85/#676767:#555555/auto/" alt="img" />
+                      </a>
+
+                      <div class="clearfix"></div>
+                  </div> -->
+
+          <!-- categories -->
+          <div class="widget">
+
+            <h3>Categories</h3>
+
+            <ul>
+               <li><a class="theme_link" href="/category/blog.html"><i class="fa fa-dot-circle-o"></i> Blog</a>
+              </li>
+              <li><a class="theme_link" href="/category/git.html"><i class="fa fa-dot-circle-o"></i> Git</a>
+              </li>
+              <li><a class="theme_link" href="/category/pelican.html"><i class="fa fa-dot-circle-o"></i> Pelican</a>
+              </li>
+            </ul>
+
+          </div>
+
+          <!-- Archives -->
+          <div class="widget">
+
+            <h3>Archives</h3>
+
+            <!-- Get all of the articles with their dates -->
+            <div class="hidden">
+                None
+                None
+                None
+                None
+                None
+                None
+                None
+            </div>
+
+            <!-- If the user indicates they prefer a list.-->                <ul class="tree">
+                    <li>
+                        <span><i class="fa fa-minus-square-o"></i>2017</span>
+                        <ul>
+                            <li>
+                                <span><i class="fa fa-plus-square-o"></i>2017-07</span>
+                                <ul>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/1500367116/">
+                                            <small>2017-07-17 周一</small>将本地项目上传到Github</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/1499656270/">
+                                            <small>2017-07-11 周二</small>test5</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/1499656253/">
+                                            <small>2017-07-10 周一</small>test4</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/1499656175/">
+                                            <small>2017-07-09 周日</small>test2</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/1499656148/">
+                                            <small>2017-07-08 周六</small>test1</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/1499656216/">
+                                            <small>2017-07-07 周五</small>test3</a>
+                                        </li>
+                                        <li style="display: none;">
+                                            <a class="theme_link" href="/articles/pelican-blog/">
+                                            <small>2017-07-07 周五</small>采用pelican搭建数据科学博客</a>
+                                        </li>
+                                </ul>
+                            </li>
+                        </ul></li>
+                </ul></div>
+
+        </div>
+        <!-- /SIDEBAR -->
+
+      </div>
+
+    </article>
+  </section>
+  <!-- /BLOG -->
+
+<!-- FOOTER -->
+<footer>
+
+  <!-- SCROOL TO TOP -->
+  <a href="#toTop" class="fa fa-arrow-up toTop"></a>
+
+  <div class="container">
+
+    <div class="row">
+
+        <div class="col-md-6 copyright">
+            Joshua Zou
+            <br />2017 &copy; All Rights Reserved.
+        </div>
+
+        <div class="col-md-6 text-right">
+              <a href="http://www.weibo.com/233499456" class="social fa fa-weibo" target="_blank"></a>
+              <a href="mailto:joshua_zou@163.com" class="social fa fa-envelope" target="_blank"></a>
+              <a href="https://twitter.com/joshua_zou" class="social fa fa-twitter" target="_blank"></a>
+              <a href="https://www.facebook.com/joshua.zou.127" class="social fa fa-facebook" target="_blank"></a>
+              <a href="https://www.linkedin.com/in/%E5%B8%85-%E9%82%B9-736390135/" class="social fa fa-linkedin" target="_blank"></a>
+              <a href="https://github.com/ZouJoshua" class="social fa fa-github" target="_blank"></a>
+        </div>
+
+    </div>
+
+  </div>
+</footer>
+<!-- /FOOTER -->
+
+
+
+<!-- CORE FILES -->
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/theme/js/jquery.isotope.js"></script>
+<script type="text/javascript" src="/theme/js/masonry.js"></script>
+
+<!-- PLUGINS -->
+<script type="text/javascript" src="/theme/js/jquery.fitvids.min.js"></script>
+<script type="text/javascript" src="/theme/js/jquery.appear.js"></script>
+<script type="text/javascript" src="/theme/js/jquery.superslides.min.js"></script>
+<script type="text/javascript" src="/theme/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/theme/js/jquery.carouFredSel-6.2.1-packed.js"></script>
+<script type="text/javascript" src="/theme/js/jquery.countTo.js"></script>
+<script type="text/javascript" src="/theme/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/theme/js/holder.js"></script>
+<!-- delete on production -->
+
+<!-- js scripts -->
+<script async type="text/javascript" src="/theme/js/scripts.js"></script>
+
+<script type="text/javascript" src="/theme/js/ImageAutoResize.js"></script>
+<script type="text/javascript" src="/theme/js/application.js"></script>
+
+
+
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'joshuazou'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+  var s = document.createElement('script'); s.async = true;
+  s.type = 'text/javascript';
+  s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  }());
+</script>
+
+
+</body>
+
+</html>
