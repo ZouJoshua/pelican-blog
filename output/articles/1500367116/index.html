@@ -94,213 +94,128 @@
         <div id="blog_main_area" class="left col-md-9">
   <!-- article title -->
   <header>
-      <h1>test2</h1>
+      <h1>将本地项目上传到Github</h1>
     <small class="fsize13">
-            <a href="https://ZouJoshua.github.io/category/pelican.html" rel="tag tooltip" class="label label-default light" data-placement="right" data-original-title="4 articles in this category"><i class="fa fa-dot-circle-o"></i> Pelican</a>
-      <a href="https://ZouJoshua.github.io/articles/1499656175/#disqus_thread" class="scrollTo label label-default light" data-disqus-identifier="articles/1499656175/"><i class="fa fa-comment-o"></i>  Comments</a>
-      <span class="label label-default light">2017-07-09 周日</span> 
+            <a href="https://ZouJoshua.github.io/category/git.html" rel="tag tooltip" class="label label-default light" data-placement="right" data-original-title="1 article in this category"><i class="fa fa-dot-circle-o"></i> Git</a>
+      <a href="https://ZouJoshua.github.io/articles/1500367116/#disqus_thread" class="scrollTo label label-default light" data-disqus-identifier="articles/1500367116/"><i class="fa fa-comment-o"></i>  Comments</a>
+      <span class="label label-default light">2017-07-17 周一</span> 
     </small>
   </header>
 
   <article class='content'>
-    <h1>采用pelican搭建数据科学博客</h1>
-<blockquote>
-<h2>前言</h2>
-<p>在今年的个人计划中，想要搭建一个数据挖掘的平台，主要目的是，希望通过这件事能让自己对数据挖掘、机器学习的各种算法都很熟练，同时对搭建这样的平台框架有个基础的实践与认知。因此，就想在做这件事的时候能将自己趟过的坑记录整理下来，帮助自己从技术上提高。所以，首先得搭建一个自己的博客。虽然，目前网上有很多现成的博客系统，但是自己总觉得自定义的才是最炫酷的（其实并没有什么卵用），希望能一直坚持下来吧。</p>
-</blockquote>
-<h3>环境</h3>
-<ul>
-<li>本地环境</li>
-</ul>
-<p>windows 10 64位/ubuntu 16.04（笔记本为win10，台式机为ubuntu系统）</p>
-<p>Python 3.5</p>
-<ul>
-<li>服务器环境</li>
-</ul>
-<p>ubuntu 16.04（AWS云服务）</p>
-<p>python 3.5</p>
-<h2>博客框架</h2>
-<p>通过初始化Pelican设置生成一个基本的博客框架，在创建的文件夹下运行pelican-quickstart时，会开始一个交互式博客安装过程。根据提示一步一步输入相应的配置项，对于不了解pelican框架或第一次安装的情况下，大多数问题直接点击<code>Enter</code>接受默认即可，后续可以在<code>pelicanconf.py</code>文件里更改配置。</p>
-<div class="highlight"><pre><span></span>(blogs) D:\Python\envs\blogs\blog&gt;pelican-quickstart
-Welcome to pelican-quickstart v3.7.1.
-
-This script will help you create a new Pelican-based website.
-
-Please answer the following questions so this script can generate the files needed by Pelican.
-
-
-&gt; Where do you want to create your new web site? [.]
-&gt; What will be the title of this web site? Joshua&#39;s Blog
-&gt; Who will be the author of this web site? Joshua Zou
-&gt; What will be the default language of this web site? [Chinese (Simplified)]
-&gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
-&gt; Do you want to enable article pagination? (Y/n)
-&gt; How many articles per page do you want? [10]
-&gt; What is your time zone? [Europe/Paris] Asia/Shanghai
-&gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) 
-&gt; Do you want an auto-reload &amp; simpleHTTP script to assist with theme and site development? (Y/n)
-&gt; Do you want to upload your website using FTP? (y/N)
-&gt; Do you want to upload your website using SSH? (y/N)
-&gt; Do you want to upload your website using Dropbox? (y/N)
-&gt; Do you want to upload your website using S3? (y/N)
-&gt; Do you want to upload your website using Rackspace Cloud Files? (y/N)
-&gt; Do you want to upload your website using GitHub Pages? (y/N)
-Done. Your new project is available at D:\Python\envs\blogs\blog
-</pre></div>
-
-
-<p>完成后会在相应的目录里生成如下基础框架结构及文件：</p>
-<div class="highlight"><pre><span></span>blog/
-├── content            # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
-│   └── (pages)        # Blog文件，如*.md、*.ipynb等文件
-├── output             # 将blog文件转化成相应的html及相应文件的存放目录
-├── develop_server.sh  # pelican简易web服务器操作文件
-├── Makefile           # 方便管理博客的Make命令文件
-├── fabfile.py         # 与make类似，可用fab publish，fab server命令
-├── pelicanconf.py     # 本地开发时的配置文件
-└── publishconf.py     # 发布时的配置文件，可删除
-</pre></div>
-
-
-<p>后续配置完整后，框架如下：</p>
-<div class="highlight"><pre><span></span>blog/
-|--content               # 存储Blog文件的目录，这个目录及子目录下的所有md和rst文件都会被转成html
-|  └──(pages)            # Blog文件，如*.md、*.ipynb等文件
-|--output                # 将blog文件转化成相应的html及相应文件的存放目录
-   └──.git               # 执行git init之后，产生的远程仓库目录
-|  └──author             # 作者目录，存放pelicanconf.py中指定的Author文件
-|  └──category           # 分类目录，默认目录文件为misc，在编辑器中指定
-|  └──feeds              # 目录，pelicanconf.py中FEED_RSS指定的XML文件
-|  └──pages              # 目录，pelicanconf.py中ARTICLE_URL指定格式分类文件
-|  └──tag                # 目录，存放编辑器开头所指定的Tag
-|  └──theme              # 目录，存放博客模板文件
-|  └──archives.html,authors.html,categories.html,index.html, tags.html
-|——pelican-plugins       # 目录，pelican插件
-|——pelican-themes        # 目录，pelican主题
-|——develop_server.sh     # pelican简易web服务器操作文件
-|——Makefile              # make 命令文件
-|——fabfile.py            # 与make类似，可用fab publish, fab server命令
-|——pelicanconf.py        # 本地开发时的配置文件
-|——publishconf.py        # 发布时的配置文件，可删除
-</pre></div>
-
-
-<h2>Git远程仓库配置</h2>
-<p>要将blog部署到git上，必须在本地建立一个git仓库，同时必须确保在github server端有远程仓库，名字一般为username.github.io。本地操作命令如下：</p>
-<div class="highlight"><pre><span></span>cd output
-git init         #产生一个.git文件夹
-git remote add origin https://github.com/username.github.io.git    #将远程仓库配置到本地
-</pre></div>
-
-
-<h3>Feed设置</h3>
-<div class="highlight"><pre><span></span>FEED_RSS = u&quot;feeds/all.rss.xml&quot; 
-CATEGORY_FEED_RSS=u&quot;feeds/%s.rss.xml&quot;    #为分类添加Feed
-</pre></div>
-
-
-<h3>主题设置</h3>
-<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican-themes.git # 获取全部主题,有些主题下载下来为空需要自己重新找下该主题的链接重新下载安装下
-cd pelican-themes
-git clone https://github.com/kdeldycke/plumage.git
-pelican-themes -i plumage  #可换成你自己的theme
-</pre></div>
-
-
-<h4>主题头像设置</h4>
-<div class="highlight"><pre><span></span>blog/
-└── content/
-  └── images/
-      └──yourheaderimage.png
-</pre></div>
-
-
-<p>在配置文件<code>pelicanconf.py</code>中添加设置：</p>
-<div class="highlight"><pre><span></span>STATIC_PATHS = [&#39;images&#39;]
-HEADER_IMAGE = &quot;yourheaderimage.png&quot;
-</pre></div>
-
-
-<h3>Disqus第三方评论</h3>
-<p>第三方评论系统有很多，这里选用很流行的Disqus作为第三方评论系统，同样需要到Disqus官网申请账号，然后填写两处：</p>
-<div class="highlight"><pre><span></span>Site name: {your git account name}.github.io
-Admin URL: {Shortname}.disqus.com
-</pre></div>
-
-
-<h3>Plugin设置</h3>
-<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican-plugins.git
-</pre></div>
-
-
-<ul>
-<li>获取全部插件<code>git clone https://github.com/getpelican/pelican-plugins.git</code></li>
-</ul>
-<h3>Jupyter插件</h3>
-<p>Pelican默认情况下并不支持使用jupyter写博客 – 我们需要安装插件来进行支持。我们将把插件以git submodule的方式进行安装以便于管理。</p>
-<ul>
+    <p>本次操作需要用到管理工具<code>Git</code>，<a href="https://git-scm.com/">点击下载</a>。</p>
+<h2>本地Git仓库设置</h2>
+<ol>
 <li>
-<p>执行<code>git init</code>将当前文件夹初始化为一个git仓库。</p>
+<p>创建Git配置文件。</p>
+<p>通过命令<code>git init</code>把即将要上传的本地项目文件夹变成Git可管理的仓库，即创建该项目的本地版本库。你会发现你的文件下生成一个<code>.git</code>文件夹，默认是隐藏文件。可通过<code>git status</code>来查看你当前的状态。Git安装好之后，打开所要上传的项目文件夹，鼠标右键点击windows系统下选择<code>Git Bash Here</code>。</p>
+<div class="highlight"><pre><span></span>$ git init
+$ git status
+</pre></div>
+
+
+<p><img alt="图片1" src="https://i.imgur.com/IL1rdhx.png"></p>
 </li>
 <li>
-<p>创建<code>plugins</code>文件夹</p>
+<p>通过<code>git add .</code>（.和add之间有空格）将当前所有文件添加到仓库上，仍可通过<code>git status</code>来查看你当前的状态。</p>
+<div class="highlight"><pre><span></span>$ git add .
+$ git status
+</pre></div>
+
+
+<p><img alt="图片2" src="https://i.imgur.com/UmgDwI5.png"></p>
 </li>
-<li>在plugins文件夹中执行<code>git submodule add https://github.com/danielfrg/pelican-ipynb.git plugins/ipynb</code>来添加插件</li>
-</ul>
-<p>为了启动插件，我们需要修改pelicanconf.py并将以下内容添加到尾部：</p>
-<div class="highlight"><pre><span></span>MARKUP = (&#39;md&#39;, &#39;ipynb&#39;)
-PLUGIN_PATHS = [ &#39;./plugins&#39; ]  # 如果像原文直接PLUGIN_PATH = `./plugins`而不使用列表会报warning
-PLUGINS = [&#39;ipynb.markup&#39;]
+<li>
+<p>用<code>git commit</code>把项目提交到仓库，<code>-m</code>后面引号里面是本次提交的注释内容，这个可以不写，但最好写上，不然会报错，详情自行Google。</p>
+<div class="highlight"><pre><span></span>$ git commit -m <span class="s2">&quot;commit blog&quot;</span>
 </pre></div>
 
 
-<h3>Menu Item设置</h3>
-<div class="highlight"><pre><span></span>MENUITEMS = ((&quot;ITEM1&quot;,&quot;http://github.com&quot;),
-         (&quot;ITEM2&quot;,URL),
-        ......)
+<p><img alt="图片3" src="https://i.imgur.com/CjcobJ0.png"></p>
+<p>本地Git仓库这边的工作做完了，下面就到了连接远程仓库（也就是连接Github）</p>
+</li>
+</ol>
+<h2>远程仓库Github设置</h2>
+<p>本地Git仓库和Github仓库之间的传输是通过SSH加密的，所以连接时需要设置一下，先在本地生成一<code>.ssh</code>。</p>
+<ol>
+<li>
+<p>创建SSH KEY，先查看本地是否有.ssh文件，有的话删掉。</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/.ssh
 </pre></div>
 
 
-<h3>BlogRoll和Social设置</h3>
-<p>设置一些Blog链接，通过设置LINKS实现,具体如下：</p>
-<div class="highlight"><pre><span></span>LINKS =  ((&quot;Github&quot;, &quot;https://github.com&quot;),
-  (&quot;Cnblogs&quot;, URL),)
-SOCIAL = ((&quot;博客园&quot;, &quot;http://www.cnblogs.com&quot;),
-     (&quot;Github&#39;,&#39;http://github.com&quot;),)
+</li>
+<li>
+<p>输入命令，生成.ssh，写你自己的邮箱</p>
+<div class="highlight"><pre><span></span>$ ssh-keygen -t rsa -C <span class="s2">&quot;your email@.com&quot;</span>
 </pre></div>
 
 
-<h3>发布博客站点</h3>
-<p>三种方法：</p>
-<ul>
-<li>pelican命令</li>
-</ul>
-<blockquote></blockquote>
-<div class="highlight"><pre><span></span>pelican content -s publishconf.py
+<p>一直回车就可以，这样就表示成功了，会在C盘的用户目录的根目录下生成一个<code>.ssh</code>文件，如果找不到，可以搜索一下，文件下会有<code>id_rsa</code>与<code>id_rsa.pug</code>两个文件。
+<img alt="图片4" src="https://i.imgur.com/1NknRPR.png"></p>
+<p>本地目录下生成的文件：</p>
+</li>
+</ol>
+<p><img alt="图片5" src="https://i.imgur.com/YAGYPRi.png"></p>
+<ol>
+<li>
+<p>为了避免与Github创建连接时出错，可以新建一个config文件，将以下代码复制进去：</p>
+<div class="highlight"><pre><span></span>Host github.com
+User git
+Hostname ssh.github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa
+Port 443
 </pre></div>
 
 
-<ul>
-<li>fabric</li>
-</ul>
-<blockquote></blockquote>
-<div class="highlight"><pre><span></span>pip install fabric
-fab build
-fab regenerate
-fab serve
-fab publish
+</li>
+<li>
+<p>登录Github，找到右上角的图标，打开点进里面的<code>Settings</code>，再选中里面的<code>SSH and GPG KEYS</code>，点击右上角的<code>New SSH key</code>，然后<code>Title</code>里面随便填，再把刚才<code>id_rsa.pub</code>里面的内容复制到<code>Title</code>下面的<code>Key</code>内容框里面，最后点击<code>Add SSH key</code>，这样就完成了SSH Key的加密。</p>
+</li>
+</ol>
+<p><img alt="图片6" src="https://i.imgur.com/AxCcxg3.png">
+5. 测试连接是否成功，下图表示访问成功</p>
+<div class="highlight"><pre><span></span>    $ ssh -t git@github.com
 </pre></div>
 
 
-<ul>
-<li>make</li>
-</ul>
-<blockquote></blockquote>
-<div class="highlight"><pre><span></span>make html
-make regenerate
-make serve
-make devserver
-./develop_server.sh stop
+<p><img alt="图片7" src="https://i.imgur.com/DXkZk93.png">
+6. 在Github上创建一个Git仓库。
+    <em>此时如果你勾选了<code>Initialize this repository with a README</code>（就是创建仓库的时候自动给你创建一个README文件），那么到了第8步你将本地仓库内容推送到远程仓库的时候就会报一个</em>failed to push some refs to https://github.com/guyibang/TEST2.git<em>的错误,这是由于你新创建的那个仓库里面的README文件不在本地仓库目录中，解决方法见第8步。</em></p>
+<p><img alt="图片8" src="https://i.imgur.com/D71K5mn.png">
+7. Github上创建好Git仓库之后我们就可以和本地仓库进行关联了，注意origin后面加的是你Github上创建好的仓库的地址。根据创建好的Git仓库页面的提示，可以在本地blog仓库的命令行输入：</p>
+<div class="highlight"><pre><span></span>    $ git remote add origin https://github.com/ZouJoshua/pelican-blog.git
+</pre></div>
+
+
+<p><img alt="图片9" src="https://i.imgur.com/4z7h5BP.png">
+    解决办法：</p>
+<div class="highlight"><pre><span></span>    先输入：$ git remote rm origin
+    再输入：$ git remote add origin https://github.com/ZouJoshua/pelican-blog.git
+</pre></div>
+
+
+<ol>
+<li>
+<p>关联好之后就可以把本地库的所有内容推送到远程仓库（也就是Github）上了</p>
+<div class="highlight"><pre><span></span>$ git push -u origin master
+</pre></div>
+
+
+<p>由于新建的远程仓库是空的，所以要加上<code>-u</code>这个参数，等远程仓库里面有了内容之后，下次再从本地库上传内容的时候只需下面这样就可以了。</p>
+<div class="highlight"><pre><span></span>$ git push origin master
+</pre></div>
+
+
+<p>此时，推送时，会出现如下错误：</p>
+</li>
+</ol>
+<p><img alt="图片10" src="https://i.imgur.com/9nh2vZb.png"></p>
+<div class="highlight"><pre><span></span>这是由于新创建的那个仓库里面的README文件不在本地仓库目录中，这时我们可以通过以下命令先将内容合并：
+
+    $ git pull --rebase origin master
+然后再`git push`，登录Github查看，就会将自己的项目上传到Github。
 </pre></div>
   </article>
 
@@ -308,11 +223,11 @@ make devserver
 
   <!-- SOCIAL -->
 <p class="socials">
-    <a href="http://www.facebook.com/sharer/sharer.php?u=https://ZouJoshua.github.io/articles/1499656175/" class="rounded-icon social fa fa-facebook" target="_blank" title="Share on Facebook"><!-- facebook --></a>
-    <a href="http://twitter.com/home?status=https://ZouJoshua.github.io/articles/1499656175/" class="rounded-icon social fa fa-twitter" target="_blank" title="Share on Twitter"><!-- twitter --></a>
-    <a href="https://plus.google.com/share?url=https://ZouJoshua.github.io/articles/1499656175/" class="rounded-icon social fa fa-google-plus" target="_blank" title="Share on Google+"><!-- google plus --></a>
-    <a href="http://pinterest.com/pin/create/link/?url==https://ZouJoshua.github.io/articles/1499656175/" class="rounded-icon social fa fa-pinterest"  target="_blank" title="Share on Pinterest"><!-- pinterest --></a>
-    <a href="http://www.linkedin.com/shareArticle?mini=true&url=https://ZouJoshua.github.io/articles/1499656175/&title=test2&summary=&source=" class="rounded-icon social fa fa-linkedin" target="_blank" title="Share on Linkedin"><!-- linkedin --></a>
+    <a href="http://www.facebook.com/sharer/sharer.php?u=https://ZouJoshua.github.io/articles/1500367116/" class="rounded-icon social fa fa-facebook" target="_blank" title="Share on Facebook"><!-- facebook --></a>
+    <a href="http://twitter.com/home?status=https://ZouJoshua.github.io/articles/1500367116/" class="rounded-icon social fa fa-twitter" target="_blank" title="Share on Twitter"><!-- twitter --></a>
+    <a href="https://plus.google.com/share?url=https://ZouJoshua.github.io/articles/1500367116/" class="rounded-icon social fa fa-google-plus" target="_blank" title="Share on Google+"><!-- google plus --></a>
+    <a href="http://pinterest.com/pin/create/link/?url==https://ZouJoshua.github.io/articles/1500367116/" class="rounded-icon social fa fa-pinterest"  target="_blank" title="Share on Pinterest"><!-- pinterest --></a>
+    <a href="http://www.linkedin.com/shareArticle?mini=true&url=https://ZouJoshua.github.io/articles/1500367116/&title=将本地项目上传到Github&summary=&source=" class="rounded-icon social fa fa-linkedin" target="_blank" title="Share on Linkedin"><!-- linkedin --></a>
         <!-- JiaThis Button BEGIN -->
         <div class="jiathis_style">
             <span class="jiathis_txt">分享到：</span>
@@ -329,7 +244,9 @@ make devserver
 
   <!-- TAGS -->
   <p class="fsize16"> Tags:
-        <a href="/tag/pelicannumpyblogs.html" rel="tooltip" class="label label-default light" data-placement="right" data-original-title="1 article with this tag"><i class="fa fa-tags"></i> pelican，numpy，blogs</a>
+        <a href="/tag/blog.html" rel="tooltip" class="label label-default light" data-placement="right" data-original-title="2 articles with this tag"><i class="fa fa-tags"></i> blog</a>
+        <a href="/tag/git.html" rel="tooltip" class="label label-default light" data-placement="right" data-original-title="2 articles with this tag"><i class="fa fa-tags"></i> git</a>
+        <a href="/tag/linux.html" rel="tooltip" class="label label-default light" data-placement="right" data-original-title="1 article with this tag"><i class="fa fa-tags"></i> linux</a>
   </p>
 
   <hr /><!-- divider -->
@@ -338,9 +255,9 @@ make devserver
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'joshuazou';
-        var disqus_identifier = "articles/1499656175/";
-        var disqus_title = "test2";
-        var disqus_url = "https://ZouJoshua.github.io/articles/1499656175/";
+        var disqus_identifier = "articles/1500367116/";
+        var disqus_title = "将本地项目上传到Github";
+        var disqus_url = "https://ZouJoshua.github.io/articles/1500367116/";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

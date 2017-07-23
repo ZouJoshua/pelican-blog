@@ -2,7 +2,7 @@ title: test3
 author: Joshua
 date: 2017-07-07 14:00
 category: Blog
-tags: pelican，plot，blogs,R
+tags: pelican,plot,blogs,R
 comment: true
 jiathis: true
 slug: 1499656216

@@ -64,6 +64,9 @@ help:
 html:
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
+upload:
+	cd $(OUTPUTDIR) && git add -A && git commit -am "update blog" && git push origin master
+
 clean:
 	[ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
 

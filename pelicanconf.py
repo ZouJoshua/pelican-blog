@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Joshua Zou'
 SITENAME = "Joshua's Blog"
-SITEURL = 'http://localhost:8000'
+SITEURL = 'https://ZouJoshua.github.io'
 
 PATH = 'content'
 
@@ -48,7 +48,7 @@ SOCIAL = (('weibo','http://www.weibo.com/233499456'),
 
 DEFAULT_PAGINATION = True
 PAGINATED_DIRECT_TEMPLATES = ('blog-index',)
-DIRECT_TEMPLATES = ('categories','index','blog-index','blog')
+DIRECT_TEMPLATES = ('categories','index','blog')
 
 POST_LIMIT = 5
 
@@ -56,15 +56,15 @@ POST_LIMIT = 5
 #RELATIVE_URLS = True
 
 # Formatting for urls
-ARTICLE_URL = "./articles/{slug}/"
-ARTICLE_SAVE_AS = "./articles/{slug}/index.html"
+ARTICLE_URL = "articles/{slug}/"
+ARTICLE_SAVE_AS = "articles/{slug}/index.html"
 
 # THEME
 THEME = './pelican-themes/BT3-Flat'
 BLOGDESCRIBE= '心安即行 \t 自在欢喜'
 
 # HEADER_IMAGE
-STATIC_PATHS = ['images','extra']
+STATIC_PATHS = ['images','extra','articles']
 HEADER_IMAGE = 'header_image.png'
 
 # BACKGROUND_IMAGE
@@ -89,7 +89,7 @@ PERSONAL_INFO = "My name is Joshua Zou, a data mining / data analysis engineer w
 # pluginss
 PLUGIN_PATHS = ['./pelican-plugins']
 PLUGINS = ['sitemap', 'neighbors', 'related_posts']
-#PLUGINS = ['sitemap', 'neighbors', 'related_posts','disqus_static']
+# PLUGINS = ['sitemap', 'neighbors', 'related_posts','disqus_static']
 # MARKUP = ('md', 'ipynb')
 
 
@@ -100,9 +100,9 @@ PLUGINS = ['sitemap', 'neighbors', 'related_posts']
 SITEMAP = {
     'format': 'xml',
     'priorities': {
-        'articles': 0.5,
+        'articles': 0.7,
         'indexes': 0.5,
-        'pages': 0.5
+        'pages': 0.3
     },
     'changefreqs': {
         'articles': 'monthly',
@@ -117,7 +117,7 @@ RELATED_POSTS_MAX = 3
 
 
 # blog search
-SWIFTYPE = True
+SWIFTYPE = 'MCHm_v2z1KZJynsU4VKN'
 
 
 # disqus
